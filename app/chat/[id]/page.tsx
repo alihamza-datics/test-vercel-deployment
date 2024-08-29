@@ -29,7 +29,7 @@ export async function generateMetadata({
   }
 }
 export const dynamic = 'force-dynamic'
-export const maxDuration = 600
+export const maxDuration = 60
 
 export default async function ChatPage({ params }: ChatPageProps) {
   // const session = (await auth()) as Session
