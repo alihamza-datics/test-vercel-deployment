@@ -1,0 +1,60 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+parameters:
+- name: BRANCH_NAME
+  displayName: Enter the branch name
+  type: string
+  default: 'main'
+
+trigger: none 
+
+variables:
+- name: projectpath
+  value: '/home/azureuser/cosmic-platform-frontend/' 
+
+jobs:
+- job: CosmicPlatformFrontend
+  displayName: 'cosmic-platform frontend varkival next-app'
+  pool: 
+    name: 'cosmic-platform'
+    demands: 
+    - agent.name -equals cosmicplatformmarkival
+
+  steps:
+
+    - script: |
+       echo 'Change directory to  $(projectpath)'
+       cd $(projectpath)  
+       rm -rf package-lock.json
+   
+       git fetch --all
+       echo 'Switching to branch ${{ parameters.BRANCH_NAME }}'
+       git switch ${{ parameters.BRANCH_NAME }}
+       
+       git branch
+       git pull
+       rm -rf package-lock.json
+      displayName: 'Checkout Source branch'
+    # - task: Cache@2
+    #   displayName: 'Cache .next/cache'
+    #   inputs:
+    #     key: next | $(Agent.OS) | package.json
+    #     path: '$(System.DefaultWorkingDirectory)/.next/cache'
+        
+    - script: |
+       npm install --legacy-peer-deps
+       npm run build
+      displayName: 'Install dependencies and build the app'
+    
+    - script: |
+       pm2 restart "nextjs-app" || pm2 start npm --name "nextjs-app" -- start
+      displayName: 'Start the frontend app'
+    
+    - script: |
+       cd $(projectpath) 
+       sleep 5
+       pm2 status 
+      displayName: 'Check the status of frontend app'
