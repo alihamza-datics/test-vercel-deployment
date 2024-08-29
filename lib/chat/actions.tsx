@@ -1,8 +1,8 @@
 // @ts-nocheck
-
+'use server'
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import 'server-only'
+// import 'server-only'
 
 import {
   createAI,
@@ -47,9 +47,6 @@ import {
 import { LanguageModelV1 } from '@ai-sdk/provider'
 import prisma from '../db/prisma'
 
-import { unstable_noStore as noStore } from 'next/cache'
-export const dynamic = 'force-dynamic'
-
 const genAI = new GoogleGenerativeAI(
   process.env.GOOGLE_GENERATIVE_AI_API_KEY || ''
 )
@@ -60,14 +57,14 @@ guess the db schema
 First generateSQLQuery than call next tool automatically e.g showData
       `
 
-export function getColumnNames(rows) {
+export async function getColumnNames(rows) {
   if (rows.length === 0) {
     return []
   }
   return Object.keys(rows[0])
 }
 
-function formatResultRows(result) {
+export async function formatResultRows(result) {
   if (result.rows.length > 0) {
     const columnNames = Object.keys(result.rows[0])
 
@@ -88,25 +85,35 @@ function formatResultRows(result) {
   }
 }
 
-async function submitUserMessage(content: string, chatId: string) {
+async function submitUserMessage(content, chatId) {
   'use server'
-  noStore()
 
-  console.log('-------------------content', content)
+  console.log(
+    'Starting submitUserMessage with content:',
+    content,
+    'and chatId:',
+    chatId
+  )
   let savedThread
   const title = content?.substring(0, 100)
 
-  // session && session.user &&
   if (!chatId) {
-    savedThread = await prisma.threads.create({
-      data: {
-        userId: 1,
-        title: title,
-        createdAt: new Date(),
-        updatedAt: new Date() // Setting the current timestamp for updatedAt
-      }
-    })
+    try {
+      savedThread = await prisma.threads.create({
+        data: {
+          userId: 1,
+          title: title,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      })
+      console.log('Thread created:', savedThread)
+    } catch (error) {
+      console.error('Error creating thread:', error)
+      throw new Error('Failed to create thread')
+    }
   }
+
   const aiState = getMutableAIState()
   const threadId = savedThread?.id || chatId
 
@@ -132,137 +139,99 @@ async function submitUserMessage(content: string, chatId: string) {
   const spinnerStream = createStreamableUI(<SpinnerMessage />)
   const messageStream = createStreamableUI(null)
   const uiStream = createStreamableUI()
-  console.log('here spinnerStream', spinnerStream)
-  ;(async () => {
-    try {
-      noStore()
-      const result = await streamText({
-        model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
-        temperature: 0,
-        maxToolRoundtrips: 5,
-        tools: {
-          generateSQLQuery: {
-            description: "Generates an SQL query based on the user's input.",
-            parameters: z.object({
-              query: z
-                .string()
-                .describe("The user's query to convert into SQL.")
-            })
-          }
-        },
-        system: instructions,
-        messages: [...history]
-      })
 
-      let textContent = ''
-      let isSpinner = true
-      let text = ''
-      console.log('here before loop --------------------------')
-      for await (const delta of result.fullStream) {
-        const { type, finishReason } = delta
-        if (type === 'finish' && finishReason === 'stop') {
-          text = ''
-          aiState.update({
-            ...aiState.get(),
-            messages: [
-              ...aiState.get().messages,
-              {
-                id: nanoid(),
-                role: 'assistant',
-                content: textContent
-              }
-            ]
+  console.log('Before processing messages...')
+
+  try {
+    const result = await streamText({
+      model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
+      temperature: 0,
+      maxToolRoundtrips: 5,
+      tools: {
+        generateSQLQuery: {
+          description: "Generates an SQL query based on the user's input.",
+          parameters: z.object({
+            query: z.string().describe("The user's query to convert into SQL.")
           })
-          console.log('finish')
         }
-        if (type === 'text-delta') {
-          if (isSpinner) {
-            spinnerStream.done(null)
-          }
-          isSpinner = false
-          const { textDelta } = delta
-          textContent += textDelta
-          text += textDelta
-          console.log('first delta text', textContent)
+      },
+      system: instructions,
+      messages: [...history]
+    })
 
-          messageStream.update(
-            <BotMessage id={threadId} content={textContent} />
-          )
-        } else if (type === 'tool-call') {
-          console.log('first toolcall')
-          const { toolName, args } = delta
+    let textContent = ''
+    let isSpinner = true
 
-          if (toolName === 'generateSQLQuery') {
-            const sqlQuery = await generateSQLQuery({ args, aiState })
+    for await (const delta of result.fullStream) {
+      const { type, finishReason } = delta
+      if (type === 'finish' && finishReason === 'stop') {
+        aiState.update({
+          ...aiState.get(),
+          messages: [
+            ...aiState.get().messages,
+            {
+              id: nanoid(),
+              role: 'assistant',
+              content: textContent
+            }
+          ]
+        })
+        console.log('Processing finished:', textContent)
+      }
+      if (type === 'text-delta') {
+        if (isSpinner) {
+          spinnerStream.done(null)
+        }
+        isSpinner = false
+        const { textDelta } = delta
+        textContent += textDelta
 
-            const showDataResult = await triggerShowDataTool({
-              sqlQuery: sqlQuery
-            })
+        messageStream.update(<BotMessage id={threadId} content={textContent} />)
+      } else if (type === 'tool-call') {
+        const { toolName, args } = delta
+        if (toolName === 'generateSQLQuery') {
+          const sqlQuery = await generateSQLQuery({ args, aiState })
+          const showDataResult = await triggerShowDataTool({
+            sqlQuery: sqlQuery
+          })
 
-            for await (const delta of showDataResult.fullStream) {
-              const { type } = delta
-              if (type === 'text-delta') {
-                console.log('second delta text')
-                const { textDelta } = delta
-                if (isSpinner) {
-                  spinnerStream.done(null)
-                }
-
-                textContent += textDelta
-                messageStream.update(
-                  <BotMessage id={threadId} content={textContent} />
-                )
-
-                aiState.update({
-                  ...aiState.get(),
-                  messages: [
-                    ...aiState.get().messages,
-                    {
-                      id: nanoid(),
-                      role: 'assistant',
-                      content: textContent
-                    }
-                  ]
+          for await (const delta of showDataResult.fullStream) {
+            const { type } = delta
+            if (type === 'text-delta') {
+              const { textDelta } = delta
+              textContent += textDelta
+              messageStream.update(
+                <BotMessage id={threadId} content={textContent} />
+              )
+            } else if (type === 'tool-call') {
+              const { toolName, args } = delta
+              if (toolName === 'showData') {
+                const showDataResult = await showData({
+                  args,
+                  aiState,
+                  uiStream
                 })
-              } else if (type === 'tool-call') {
-                console.log('second toolcall')
-                const { toolName, args } = delta
-                if (toolName === 'showData') {
-                  if (isSpinner) {
-                    spinnerStream.done(null)
-                  }
-                  const showDataResult = await showData({
-                    args,
-                    aiState,
-                    uiStream
-                  })
-                }
               }
             }
           }
         }
       }
-      console.log('loop end')
-      uiStream.done()
-      console.log('after ui')
-
-      textStream.done()
-      console.log('after textStream')
-
-      messageStream.done()
-      console.log('after messageStream')
-    } catch (e) {
-      console.log(e)
-      console.error(e)
-
-      const error = new Error(e)
-      uiStream.error(error)
-      textStream.error(error)
-      messageStream.error(error)
-      aiState.done()
     }
-  })()
-  console.log('before return', threadId)
+
+    uiStream.done()
+    textStream.done()
+    messageStream.done()
+  } catch (e) {
+    console.error('Error during processing:', e)
+    const error = new Error(e)
+    uiStream.error(error)
+    textStream.error(error)
+    messageStream.error(error)
+    aiState.done()
+  }
+
+  console.log('Returning from submitUserMessage with threadId:', threadId)
+
   return {
     id: threadId,
     attachments: uiStream.value,

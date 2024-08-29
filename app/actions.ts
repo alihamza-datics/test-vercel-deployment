@@ -19,6 +19,7 @@ export async function getChats(userId?: string | null) {
         messages: true,
       },
     });
+    // console.log('here threads', threads)
     const parsedThreads = threads.map(thread => ({
       ...thread,
       messages: thread.messages.map(message => ({

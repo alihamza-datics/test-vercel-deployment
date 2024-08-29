@@ -15,6 +15,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 // Different types of message bubbles.
 export const dynamic = 'force-dynamic'
+
 export function UserMessage({ children }: { children: React.ReactNode }) {
   return (
     <div className="group relative flex items-start md:-ml-12 bg-[#8900A0] text-white p-5 rounded-lg border userMessage">
@@ -38,15 +39,15 @@ export function BotMessage({
   id: number
 }) {
   const text = useStreamableText(content)
-  const router = useRouter()
-  const pathname = usePathname()
-  const match = pathname.split('/chat/')
-  const routId = match ? +match[1] : null
-  console.log('here  content bot message', content)
+  // const router = useRouter()
+  // const pathname = usePathname()
+  // const match = pathname.split('/chat/')
+  // const routId = match ? +match[1] : null
+  // console.log('here  content bot message', content)
 
-  if (!routId && text) {
-    router.push(`/chat/${id}`)
-  }
+  // if (!routId && text) {
+  //   router.push(`/chat/${id}`)
+  // }
   return (
     <div
       className={cn(
@@ -136,7 +137,7 @@ export function SpinnerMessage() {
   return (
     <div className="group relative flex items-start md:-ml-12">
       <div className="flex size-[25px] shrink-0 select-none items-center justify-center rounded-full border shadow-sm mb-2">
-        <img className="size-6" src="/images/ai-icon.png" alt="gemini logo" />
+        <img className="size-6" src="/images/ai-icon" alt="gemini logo" />
       </div>
       <div className="ml-4 h-[24px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
         {spinner}

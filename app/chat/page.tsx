@@ -6,7 +6,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 // import { auth } from '@/auth'
 // import { Session } from '@/lib/types'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 600
+
 export const metadata = {
   title: 'Next.js AI Chatbot'
 }
