@@ -10,7 +10,7 @@ export async function GET() {
   //   });
 
   //   console.log(companies)
-  return NextResponse.json(companies);
+  return NextResponse.json({});
   // } catch (error) {
   //   console.error('Failed to fetch company overview:', error);
 
