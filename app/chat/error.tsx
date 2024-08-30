@@ -13,7 +13,7 @@ export default function Error({
       <p>
         {error.message || 'The AI got rate limited, please try again later.'}
       </p>
-      <p>Digest: {error.digest}</p>
+      <p>Digest: {error.digest}.</p>
     </div>
   )
 }
