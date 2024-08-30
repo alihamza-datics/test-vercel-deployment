@@ -7,6 +7,8 @@ import { z } from 'zod'
 import prisma from '@/lib/db/prisma'
 import { Prisma } from '@prisma/client'
 import { LanguageModelV1 } from '@ai-sdk/provider'
+import { closeDBConnection, getDBConnection } from '../db/mssqlDb'
+import fs from 'fs'
 
 export const showData = async ({ args, aiState, uiStream }) => {
   const {
@@ -40,17 +42,21 @@ export const showData = async ({ args, aiState, uiStream }) => {
       />
     </BotCard>
   )
+  const pool = await getDBConnection()
   let result
   try {
-    result = await prisma.$queryRaw`${Prisma.raw(sqlQuery)}`
+    const request = pool.request()
+    result = await request.query(sqlQuery)
+    // result = await prisma.$queryRaw`${Prisma.raw(sqlQuery)}`
   } catch (error) {
     console.log(error)
   } finally {
+    await closeDBConnection()
     // const result = await prisma.$queryRaw`${Prisma.raw(sqlQuery)}`
     uiStream.update(
       <BotCard>
         <Offers
-          data={result?.rows || []}
+          data={result?.recordset || []}
           assumptions={assumptions}
           explanation={explanation}
           query={sqlQuery}
@@ -61,7 +67,7 @@ export const showData = async ({ args, aiState, uiStream }) => {
       </BotCard>
     )
 
-    const props = { ...args, data: result?.rows }
+    const props = { ...args, data: result?.recordset }
     aiState.done({
       ...aiState.get(),
       interactions: [],
@@ -95,10 +101,10 @@ export const generateSQLQuery = async ({ args, aiState }) => {
     'ALTER'
   ]
   const isSQLQuery = sqlKeywords.some(keyword =>
-    query.toUpperCase().includes(keyword)
+    query?.toUpperCase().includes(keyword)
   )
   const isVannaSQLQuery = sqlKeywords.some(keyword =>
-    sqlQuery.toUpperCase().includes(keyword)
+    sqlQuery?.toUpperCase().includes(keyword)
   )
   if (isSQLQuery && !isVannaSQLQuery) {
     sqlQuery = query

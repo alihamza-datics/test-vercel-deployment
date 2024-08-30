@@ -4,10 +4,10 @@ import sql, { ConnectionPool, config as SQLConfig } from 'mssql';
 
 // Interface for the database configuration
 const config: SQLConfig = {
-  user: process.env.DB_USER as string,
+  user: process.env.DB_USERNAME as string,
   password: process.env.DB_PASSWORD as string,
-  server: process.env.DB_SERVER as string,
-  database: process.env.DB_DATABASE as string,
+  server: process.env.DB_HOST as string,
+  database: process.env.DB_NAME as string,
   options: {
     encrypt: true, // Use this if you're connecting to Azure SQL
     trustServerCertificate: true, // Change to 'true' for local dev / self-signed certs

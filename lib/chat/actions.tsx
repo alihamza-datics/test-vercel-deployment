@@ -132,93 +132,105 @@ async function submitUserMessage(content, chatId) {
   const spinnerStream = createStreamableUI(<SpinnerMessage />)
   const messageStream = createStreamableUI(null)
   const uiStream = createStreamableUI()
+  ;(async () => {
+    try {
+      const result = await streamText({
+        model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
+        temperature: 0,
+        maxToolRoundtrips: 5,
+        tools: {
+          generateSQLQuery: {
+            description: "Generates an SQL query based on the user's input.",
+            parameters: z.object({
+              query: z
+                .string()
+                .describe("The user's query to convert into SQL.")
+            })
+          }
+        },
+        system: instructions,
+        messages: [...history]
+      })
 
-  try {
-    const result = await streamText({
-      model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
-      temperature: 0,
-      maxToolRoundtrips: 5,
-      tools: {
-        generateSQLQuery: {
-          description: "Generates an SQL query based on the user's input.",
-          parameters: z.object({
-            query: z.string().describe("The user's query to convert into SQL.")
+      let textContent = ''
+      let isSpinner = true
+      for await (const delta of result.fullStream) {
+        const { type, finishReason } = delta
+        if (type === 'finish' && finishReason === 'stop') {
+          aiState.update({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'assistant',
+                content: textContent
+              }
+            ]
           })
         }
-      },
-      system: instructions,
-      messages: [...history]
-    })
+        if (type === 'text-delta') {
+          if (isSpinner) {
+            spinnerStream.done(null)
+          }
+          isSpinner = false
+          const { textDelta } = delta
+          textContent += textDelta
 
-    let textContent = ''
-    let isSpinner = true
+          messageStream.update(
+            <BotMessage id={threadId} content={textContent} />
+          )
+        } else if (type === 'tool-call') {
+          const { toolName, args } = delta
+          if (toolName === 'generateSQLQuery') {
+            const sqlQuery = await generateSQLQuery({ args, aiState })
+            const showDataResult = await triggerShowDataTool({
+              sqlQuery: sqlQuery
+            })
 
-    for await (const delta of result.fullStream) {
-      const { type, finishReason } = delta
-      if (type === 'finish' && finishReason === 'stop') {
-        aiState.update({
-          ...aiState.get(),
-          messages: [
-            ...aiState.get().messages,
-            {
-              id: nanoid(),
-              role: 'assistant',
-              content: textContent
-            }
-          ]
-        })
-      }
-      if (type === 'text-delta') {
-        if (isSpinner) {
-          spinnerStream.done(null)
-        }
-        isSpinner = false
-        const { textDelta } = delta
-        textContent += textDelta
-
-        messageStream.update(<BotMessage id={threadId} content={textContent} />)
-      } else if (type === 'tool-call') {
-        const { toolName, args } = delta
-        if (toolName === 'generateSQLQuery') {
-          const sqlQuery = await generateSQLQuery({ args, aiState })
-          const showDataResult = await triggerShowDataTool({
-            sqlQuery: sqlQuery
-          })
-
-          for await (const delta of showDataResult.fullStream) {
-            const { type } = delta
-            if (type === 'text-delta') {
-              const { textDelta } = delta
-              textContent += textDelta
-              messageStream.update(
-                <BotMessage id={threadId} content={textContent} />
-              )
-            } else if (type === 'tool-call') {
-              const { toolName, args } = delta
-              if (toolName === 'showData') {
-                const showDataResult = await showData({
-                  args,
-                  aiState,
-                  uiStream
-                })
+            for await (const delta of showDataResult.fullStream) {
+              const { type } = delta
+              if (type === 'text-delta') {
+                if (isSpinner) {
+                  spinnerStream.done(null)
+                }
+                isSpinner = false
+                const { textDelta } = delta
+                textContent += textDelta
+                messageStream.update(
+                  <BotMessage id={threadId} content={textContent} />
+                )
+              } else if (type === 'tool-call') {
+                if (isSpinner) {
+                  spinnerStream.done(null)
+                }
+                isSpinner = false
+                const { toolName, args } = delta
+                if (toolName === 'showData') {
+                  const showDataResult = await showData({
+                    args,
+                    aiState,
+                    uiStream
+                  })
+                }
               }
             }
           }
         }
       }
-    }
 
-    uiStream.done()
-    textStream.done()
-    messageStream.done()
-  } catch (e) {
-    console.error('Error during processing:', e)
-    const error = new Error(e)
-    uiStream.error(error)
-    textStream.error(error)
-    messageStream.error(error)
-    aiState.done()
-  }
+      uiStream.done()
+      textStream.done()
+      messageStream.done()
+    } catch (e) {
+      console.error('Error during processing:', e)
+      const error = new Error(e)
+      uiStream.error(error)
+      textStream.error(error)
+      messageStream.error(error)
+      aiState.done()
+    }
+  })()
 
   return {
     id: threadId,

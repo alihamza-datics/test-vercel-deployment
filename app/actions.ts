@@ -19,14 +19,8 @@ export async function getChats(userId?: string | null) {
         messages: true,
       },
     });
-    const parsedThreads = threads.map(thread => ({
-      ...thread,
-      messages: thread.messages.map(message => ({
-        ...message,
-        display: message.display, // Parse JSON string to object
-      })),
-    }));
-    return parsedThreads;
+
+    return threads;
 
   } catch (error) {
     throw new Error(error)
@@ -49,14 +43,19 @@ export async function getChat(id: any, userId: any) {
 
     const parsedChat = {
       ...chat,
-      messages: chat.messages.map(message => ({
-        ...message,
-        display: message.display,
-      })),
+      messages: chat.messages.map(message => {
+        // console.log('here display', message.display)
+        const data = {
+          ...message,
+          display: JSON.parse(message.display),
+        }
+        return data
+      }),
     }
 
     return parsedChat
   } catch (error) {
+    console.log('here get chat error', error)
     throw new Error(error)
   }
 }
