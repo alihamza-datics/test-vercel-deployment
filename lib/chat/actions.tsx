@@ -1,8 +1,8 @@
 // @ts-nocheck
-'use server'
+// 'use server'
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-// import 'server-only'
+import 'server-only'
 
 import {
   createAI,
