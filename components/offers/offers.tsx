@@ -76,8 +76,8 @@ export function Offers({
   )
 
   return (
-<div className="max-w-[650px] xs:w-[220px]">     
-  {isLoading ? (
+    <div className="max-w-[650px] xs:w-[220px]">
+      {isLoading ? (
         <InitialTextSkeleton />
       ) : (
         <div className="space-y-4">
@@ -117,10 +117,13 @@ export function Offers({
       {typeOfChart === 'bar' && isDataLoading ? (
         <BarChartSkeleton />
       ) : (
+        data?.length > 0 &&
         typeOfChart === 'bar' && (
           <>
             <div className="mt-10 mb-2">
-              <h2 className="text-xl font-bold">Graphical Representation</h2>
+              <h2 className="text-xl font-bold">
+                Comparison of Data Across Categories
+              </h2>
             </div>
 
             <div ref={chartRef}>
@@ -132,10 +135,11 @@ export function Offers({
       {typeOfChart === 'bar' && isDataLoading ? (
         <BarChartSkeleton /> // use piechart skeleton
       ) : (
+        series?.length > 0 &&
         typeOfChart === 'bar' && (
           <>
             <div className="mt-10 mb-2">
-              <h2 className="text-xl font-bold">Graphical Representation</h2>
+              <h2 className="text-xl font-bold">Proportional Share of Data</h2>
             </div>
 
             <div ref={pieChartRef}>

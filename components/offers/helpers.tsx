@@ -34,13 +34,14 @@ export const downloadDocument = async ({
   pieChartRef
 }) => {
   const chartDataUrl =
-    typeOfChart === 'bar'
+    typeOfChart === 'bar' && chartRef.current
       ? await html2canvas(chartRef.current).then(canvas =>
           canvas.toDataURL('image/png')
         )
       : null
+
   const pieChartDataUrl =
-    typeOfChart === 'bar'
+    typeOfChart === 'bar' && pieChartRef.current
       ? await html2canvas(pieChartRef.current).then(canvas =>
           canvas.toDataURL('image/png')
         )
@@ -57,7 +58,6 @@ export const downloadDocument = async ({
           }),
           new Paragraph({
             text: query,
-            // heading: 'Heading1',
             spacing: { before: 200, after: 200 }
           }),
           new Paragraph({
@@ -67,7 +67,6 @@ export const downloadDocument = async ({
           }),
           new Paragraph({
             text: assumptions,
-            // heading: 'Heading1',
             spacing: { before: 200, after: 200 }
           }),
           new Paragraph({
@@ -77,7 +76,6 @@ export const downloadDocument = async ({
           }),
           new Paragraph({
             text: explanation,
-            // heading: 'Heading1',
             spacing: { before: 200, after: 200 }
           }),
           new Paragraph({
@@ -85,73 +83,74 @@ export const downloadDocument = async ({
             heading: 'Heading1',
             spacing: { before: 200, after: 200 }
           }),
-          new Table({
-            width: {
-              size: 100, // Set table width to 100% of the page width
-              type: WidthType.PERCENTAGE
-            },
-            rows: [
-              new TableRow({
-                children: Object.keys(filteredData[0] || {}).map(
-                  key =>
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: formatColumnName(key),
-                          heading: 'Heading6'
-                        })
-                      ],
-                      width: {
-                        size: 100 / Object.keys(filteredData[0] || {}).length, // Distribute width equally across cells
-                        type: WidthType.PERCENTAGE
-                      },
-                      margins: {
-                        top: 100,
-                        bottom: 100,
-                        left: 100,
-                        right: 100
-                      }
+          filteredData.length > 0 &&
+            new Table({
+              width: {
+                size: 100,
+                type: WidthType.PERCENTAGE
+              },
+              rows: [
+                new TableRow({
+                  children: Object.keys(filteredData[0] || {}).map(
+                    key =>
+                      new TableCell({
+                        children: [
+                          new Paragraph({
+                            text: formatColumnName(key),
+                            heading: 'Heading6'
+                          })
+                        ],
+                        width: {
+                          size: 100 / Object.keys(filteredData[0] || {}).length,
+                          type: WidthType.PERCENTAGE
+                        },
+                        margins: {
+                          top: 100,
+                          bottom: 100,
+                          left: 100,
+                          right: 100
+                        }
+                      })
+                  )
+                }),
+                ...filteredData.map(
+                  row =>
+                    new TableRow({
+                      children: Object.keys(row).map(
+                        key =>
+                          new TableCell({
+                            children: [
+                              new Paragraph({
+                                text:
+                                  Object.prototype.toString.call(row[key]) ===
+                                  '[object Date]'
+                                    ? formatDate(row[key])
+                                    : row[key].toString()
+                              })
+                            ],
+                            width: {
+                              size: 100 / Object.keys(row).length,
+                              type: WidthType.PERCENTAGE
+                            },
+                            margins: {
+                              top: 100,
+                              bottom: 100,
+                              left: 100,
+                              right: 100
+                            }
+                          })
+                      )
                     })
                 )
-              }),
-              ...filteredData.map(
-                row =>
-                  new TableRow({
-                    children: Object.keys(row).map(
-                      key =>
-                        new TableCell({
-                          children: [
-                            new Paragraph({
-                              text:
-                                Object.prototype.toString.call(row[key]) ===
-                                '[object Date]'
-                                  ? formatDate(row[key])
-                                  : row[key].toString()
-                            })
-                          ],
-                          width: {
-                            size: 100 / Object.keys(row).length, // Distribute width equally across cells
-                            type: WidthType.PERCENTAGE
-                          },
-                          margins: {
-                            top: 100,
-                            bottom: 100,
-                            left: 100,
-                            right: 100
-                          }
-                        })
-                    )
-                  })
-              )
-            ]
-          }),
-          ...(typeOfChart === 'bar'
+              ]
+            }),
+          ...(typeOfChart === 'bar' && chartDataUrl
             ? [
                 new Paragraph({
                   text: 'Comparison of Data Across Categories',
                   heading: 'Heading1',
                   spacing: { before: 200, after: 200 },
-                  pageBreakBefore: true // Forces the heading to start on a new page if needed
+                  pageBreakBefore: true
                 }),
                 new Paragraph({
                   children: [
@@ -166,13 +165,13 @@ export const downloadDocument = async ({
                 })
               ]
             : []),
-          ...(typeOfChart === 'bar'
+          ...(typeOfChart === 'bar' && pieChartDataUrl
             ? [
                 new Paragraph({
                   text: 'Proportional Share of Data',
                   heading: 'Heading1',
                   spacing: { before: 200, after: 200 },
-                  pageBreakBefore: true // Forces the heading to start on a new page if needed
+                  pageBreakBefore: true
                 }),
                 new Paragraph({
                   children: [
@@ -187,7 +186,7 @@ export const downloadDocument = async ({
                 })
               ]
             : [])
-        ]
+        ].filter(Boolean) // Filter out any undefined elements
       }
     ]
   })
