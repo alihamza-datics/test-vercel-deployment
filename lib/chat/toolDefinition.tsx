@@ -169,7 +169,6 @@ const fetchSQLQuery = async ({ query }) => {
     }
 
     const data = await response.json()
-    console.log('here data', data)
     return data
   } catch (error) {
     console.error('Error fetching SQL query:', error)

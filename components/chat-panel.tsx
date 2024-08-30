@@ -96,7 +96,6 @@ export function ChatPanel({
                     if (responseMessage?.id) {
                       // const newUrl = `/chat/${responseMessage?.id}`;
                       // const linkUpdate = window.history.replaceState(null, '', newUrl);
-                      // console.log(linkUpdate,'linkUpdate --- long')
                       // router.push(`/chat/${responseMessage.id}`)
                     }
 

@@ -88,12 +88,6 @@ export async function formatResultRows(result) {
 async function submitUserMessage(content, chatId) {
   'use server'
 
-  console.log(
-    'Starting submitUserMessage with content:',
-    content,
-    'and chatId:',
-    chatId
-  )
   let savedThread
   const title = content?.substring(0, 100)
 
@@ -107,7 +101,6 @@ async function submitUserMessage(content, chatId) {
           updatedAt: new Date()
         }
       })
-      console.log('Thread created:', savedThread)
     } catch (error) {
       console.error('Error creating thread:', error)
       throw new Error('Failed to create thread')
@@ -139,8 +132,6 @@ async function submitUserMessage(content, chatId) {
   const spinnerStream = createStreamableUI(<SpinnerMessage />)
   const messageStream = createStreamableUI(null)
   const uiStream = createStreamableUI()
-
-  console.log('Before processing messages...')
 
   try {
     const result = await streamText({
@@ -176,7 +167,6 @@ async function submitUserMessage(content, chatId) {
             }
           ]
         })
-        console.log('Processing finished:', textContent)
       }
       if (type === 'text-delta') {
         if (isSpinner) {
@@ -229,8 +219,6 @@ async function submitUserMessage(content, chatId) {
     messageStream.error(error)
     aiState.done()
   }
-
-  console.log('Returning from submitUserMessage with threadId:', threadId)
 
   return {
     id: threadId,

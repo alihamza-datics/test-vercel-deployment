@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useClerk, useAuth } from '@clerk/clerk-react'
 import Show from '../../components/show'
 import { useUser } from '@clerk/nextjs'
-import { HiMenu } from 'react-icons/hi';
+import { HiMenu } from 'react-icons/hi'
 
 export default function HeaderComponent() {
   const { user } = useUser()
@@ -39,14 +39,15 @@ export default function HeaderComponent() {
   useEffect(() => {
     if (isLoaded && isSignedIn) {
       console.log('User is signed in:', isSignedIn)
-    } else if (isLoaded) {
-      router.push('/login') // Uncomment this to redirect if not signed in
     }
+    //  else if (isLoaded) {
+    //   router.push('/login') // Uncomment this to redirect if not signed in
+    // }
   }, [isLoaded, isSignedIn, router])
 
   // Click outside handler
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false)
       }
@@ -64,7 +65,10 @@ export default function HeaderComponent() {
         <header className="p-6 flex items-center justify-between">
           <div className="flex">
             {/* Logo */}
-            <div className="flex cursor-pointer" onClick={() => router.push('/companyProfile')}>
+            <div
+              className="flex cursor-pointer"
+              onClick={() => router.push('/companyProfile')}
+            >
               <img
                 src="/images/cosmic-logo.png"
                 alt="Logo"
@@ -77,20 +81,22 @@ export default function HeaderComponent() {
             <nav className="hidden md:flex items-center ml-4">
               <Link href="/companyProfile">
                 <button
-                  className={`${pathname === '/companyProfile'
-                    ? 'text-white bg-[#8900A0]'
-                    : 'text-[#8900A0] border-[#8900A0]'
-                    } px-4 py-2 rounded-lg`}
+                  className={`${
+                    pathname === '/companyProfile'
+                      ? 'text-white bg-[#8900A0]'
+                      : 'text-[#8900A0] border-[#8900A0]'
+                  } px-4 py-2 rounded-lg`}
                 >
                   Ecommerce
                 </button>
               </Link>
               <Link href="/chat">
                 <button
-                  className={`${pathname.match(/^\/chat(\/\d+)?$/)
-                    ? 'text-white bg-[#8900A0]'
-                    : 'text-[#8900A0] border-[#8900A0]'
-                    } px-4 py-2 rounded-lg`}
+                  className={`${
+                    pathname.match(/^\/chat(\/\d+)?$/)
+                      ? 'text-white bg-[#8900A0]'
+                      : 'text-[#8900A0] border-[#8900A0]'
+                  } px-4 py-2 rounded-lg`}
                 >
                   Ai Chat
                 </button>

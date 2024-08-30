@@ -76,7 +76,6 @@ export function PromptForm({
 
           setMessages(currentMessages => [...currentMessages, responseMessage])
         } catch (e) {
-          console.log('here error in catch', e)
           // toast(<div className="text-red-600">{e.message}</div>)
           throw new Error(e)
         }

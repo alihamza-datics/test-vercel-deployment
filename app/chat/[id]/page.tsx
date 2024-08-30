@@ -41,8 +41,6 @@ export default async function ChatPage({ params }: ChatPageProps) {
   // const userId = session.user.id as string // make it dynamic
   const userId = 1 // make it dynamic
   const chat = await getChat(Number(params.id), userId)
-  // console.log('here chat', chat)
-  // console.log('here chat', chat)
   // if (!chat) {
   //   redirect('/')
   // }

@@ -19,7 +19,6 @@ export async function getChats(userId?: string | null) {
         messages: true,
       },
     });
-    // console.log('here threads', threads)
     const parsedThreads = threads.map(thread => ({
       ...thread,
       messages: thread.messages.map(message => ({
@@ -30,7 +29,6 @@ export async function getChats(userId?: string | null) {
     return parsedThreads;
 
   } catch (error) {
-    console.log('here getChats error---------------', error)
     throw new Error(error)
   }
 }
@@ -59,7 +57,6 @@ export async function getChat(id: any, userId: any) {
 
     return parsedChat
   } catch (error) {
-    console.log('here getChat error--------------------', error)
     throw new Error(error)
   }
 }
@@ -172,7 +169,6 @@ export async function saveChat(chat: Chat) {
       ))
 
   } catch (error) {
-    console.log('here savechat error', error)
     throw new Error(error)
   }
 
