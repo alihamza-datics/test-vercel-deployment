@@ -8,7 +8,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Next.js AI Chatbot'
+  title: 'The Cosmic AI Platform Chat'
 }
 
 export default async function IndexPage() {

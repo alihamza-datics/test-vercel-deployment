@@ -5,12 +5,7 @@ import { ApexOptions } from 'apexcharts'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
-const ApexBarChart = ({
-  data,
-
-  labels,
-  series
-}) => {
+const ApexBarChart = ({ data, labels, series }) => {
   const options: ApexOptions = {
     chart: {
       type: 'bar',
@@ -38,7 +33,7 @@ const ApexBarChart = ({
     },
     yaxis: {
       title: {
-        text: 'Offers Created'
+        text: ''
       }
     },
     fill: {

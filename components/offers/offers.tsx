@@ -65,15 +65,31 @@ export function Offers({
 
   const cleanedXAxisProperty = xAxisProperty?.replace('::date', '')
   const cleanedYAxisProperty = yAxisProperty?.replace('::date', '')
-  const series = data?.map(row => Number(row[cleanedYAxisProperty]))
+  const series = data?.map(row => {
+    let value = row[cleanedYAxisProperty]
 
-  const labels = data?.map(row =>
-    new Date(row[cleanedXAxisProperty]).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit'
-    })
-  )
+    if (typeof value === 'string') {
+      value = Number(value)
+    }
+
+    return value
+  })
+  const labels = data?.map(row => {
+    const value = row[cleanedXAxisProperty]
+    if (value === null) {
+      return 'Unknown'
+    }
+
+    const isValidDate = !isNaN(Date.parse(value))
+
+    return isValidDate
+      ? new Date(value).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit'
+        })
+      : value
+  })
 
   return (
     <div className="max-w-[650px] xs:w-[220px]">

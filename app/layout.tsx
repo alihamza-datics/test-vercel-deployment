@@ -9,9 +9,9 @@ import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
 import { KasadaClient } from '@/lib/kasada/kasada-client'
 import { Inter } from 'next/font/google'
-import ClerkWrapper from '../clerk-config';
-import ClerkToken from "../components/clerkToken/index";
-import { AuthProvider } from "../context/authContext";
+import ClerkWrapper from '../clerk-config'
+import ClerkToken from '../components/clerkToken/index'
+import { AuthProvider } from '../context/authContext'
 import NextTopLoader from 'nextjs-toploader'
 
 import './globals.css'
@@ -19,15 +19,15 @@ import './globals.css'
 export const metadata = {
   metadataBase: new URL('https://gemini.vercel.ai'),
   title: {
-    default: 'Next.js Gemini Chatbot',
-    template: `%s - Next.js Gemini Chatbot`
+    default: 'Cosmic Ai Platform',
+    template: `%s - Cosmic Ai Platform`
   },
   description:
     'Build your own generative UI chatbot using the Vercel AI SDK and Google Gemini',
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png'
+    icon: '/cosmic-logo.png',
+    shortcut: '/cosmic-logo.png',
+    apple: '/cosmic-logo.png'
   }
 }
 
@@ -79,9 +79,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
               disableTransitionOnChange
             >
               <div className="flex flex-col min-h-screen">
-              {/* {!AuthProvider && <Header />} */}
-              <Header />
-                <main className="flex flex-col flex-1 relative w-full">{children}</main>
+                {/* {!AuthProvider && <Header />} */}
+                <Header />
+                <main className="flex flex-col flex-1 relative w-full">
+                  {children}
+                </main>
               </div>
               <TailwindIndicator />
             </Providers>

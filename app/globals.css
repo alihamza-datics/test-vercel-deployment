@@ -96,6 +96,20 @@
     transform: translateX(-190px) !important ;
   }
 
+  .sidebar-chat {
+    position: fixed !important;
+    top: 65px !important;
+    max-width: 239px;
+    left: 0px;
+    height: calc(100vh - 50px);
+    z-index: 1;
+  }
+  @media (max-width: 999px) {
+    #mainchatarea {
+      margin-left: 0 !important;
+    }
+  }
+
   * {
     @apply border-border;
   }

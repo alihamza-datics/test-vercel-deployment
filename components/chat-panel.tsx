@@ -29,16 +29,23 @@ export interface ChatPanelProps {
 export const exampleMessages = [
   {
     icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
-    heading: 'Details of Recent Offers',
-    subheading: 'Offers Created in the Last 45 Days',
-    message: `Show me the details of all offers created in last 45 day and limit it by 15 records`
+    heading: 'Top Customer Engagement',
+    subheading: 'Top 10 Customers by Website Visits',
+    message: `Retrieve the top 10 customers' names and the number of visits they made to the website to understand customer engagement.`
   },
   {
     icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
-    heading: 'Daily Offer Counts',
-    subheading: 'Top 5 Days with Most Offers',
+    heading: 'Lead Source Analysis',
+    subheading: 'First 10 Customers with Lead Sources',
     message:
-      'Show me the number of offers created each day, ordered by the number of offers, for the top 7 days'
+      "Fetch the first 10 customers' names, their lead sources, and the dates they were created for lead analysis."
+  },
+  {
+    icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
+    heading: 'Lead Source Analysis',
+    subheading: 'First 10 Customers with Lead Sources',
+    message:
+      "Retrieve the top 10 customers' names and the number of visits they made to the website to understand customer engagement.."
   }
 ]
 

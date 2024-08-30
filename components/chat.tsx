@@ -58,7 +58,7 @@ export function Chat({ id, className }: ChatProps) {
 
   return (
     <div
-      className={`max-h-[85vh] duration-300 ease-in-out p-0 size-full bg-white border-r bg-muted overflow-auto peer-[[data-state=open]] peer-[[data-state=open]] group ${
+      className={`duration-300 ease-in-out p-0 size-full bg-white border-r bg-muted  peer-[[data-state=open]] peer-[[data-state=open]] group ${
         !messages.length ? ' bg-muted flex flex-col min-h-[85.5vh]' : ''
       }`}
       ref={scrollRef}

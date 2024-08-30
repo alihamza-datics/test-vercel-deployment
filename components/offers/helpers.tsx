@@ -125,7 +125,7 @@ export const downloadDocument = async ({
                                   Object.prototype.toString.call(row[key]) ===
                                   '[object Date]'
                                     ? formatDate(row[key])
-                                    : row[key].toString()
+                                    : row?.[key]?.toString()
                               })
                             ],
                             width: {

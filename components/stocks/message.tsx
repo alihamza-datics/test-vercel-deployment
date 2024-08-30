@@ -56,7 +56,7 @@ export function BotMessage({
       )}
     >
       <div className="bg-background flex size-[25px] shrink-0 select-none items-center justify-center rounded-lg border shadow-sm">
-        <img className="size-6" src="/images/ai-icon" alt="gemini logo" />
+        <img className="size-6" src="/images/ai-icon.png" alt="cosmic logo" />
       </div>
       <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
         <MemoizedReactMarkdown
@@ -114,7 +114,7 @@ export function BotCard({ children, showAvatar = true }: any) {
           !showAvatar && 'invisible'
         )}
       >
-        <img className="size-6" src="/images/ai-icon" alt="cosmic ai logo" />
+        <img className="size-6" src="/images/ai-icon.png" alt="cosmic logo" />
       </div>
       <div className="ml-4 flex-1 pl-2">{children}</div>
     </div>
@@ -137,7 +137,7 @@ export function SpinnerMessage() {
   return (
     <div className="group relative flex items-start md:-ml-12">
       <div className="flex size-[25px] shrink-0 select-none items-center justify-center rounded-full border shadow-sm mb-2">
-        <img className="size-6" src="/images/ai-icon" alt="gemini logo" />
+        <img className="size-6" src="/images/ai-icon.png" alt="cosmic logo" />
       </div>
       <div className="ml-4 h-[24px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
         {spinner}

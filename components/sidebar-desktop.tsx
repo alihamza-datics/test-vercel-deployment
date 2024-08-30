@@ -12,11 +12,11 @@ export function SidebarDesktop({ userId }: any) {
 
   return (
     <>
-  <Sidebar
-  className="max-h-[85vh] peer relative inset-y-0 z-30 hidden -translate-x-full border-r bg-white duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex !h-auto" 
-  > 
-<ChatHistory userId={userId} />
-</Sidebar>
+      <div className="sidebar-chat">
+        <Sidebar className=" h-screen peer inset-y-0 z-30 hidden -translate-x-full border-r bg-white duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex">
+          <ChatHistory userId={userId} />
+        </Sidebar>
+      </div>
 
       {/* <> */}
       {/* <SidebarMobile>
