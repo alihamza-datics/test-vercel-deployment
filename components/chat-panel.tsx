@@ -31,21 +31,28 @@ export const exampleMessages = [
     icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
     heading: 'Top Customer Engagement',
     subheading: 'Top 10 Customers by Website Visits',
-    message: `Retrieve the top 10 customers' names and the number of visits they made to the website to understand customer engagement.`
+    message: `Fetch the top 10 customers which are present and the amount they have paid in their respective transactions.`
   },
   {
     icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
-    heading: 'Lead Source Analysis',
-    subheading: 'First 10 Customers with Lead Sources',
+    heading: 'Invoice Details',
+    subheading: 'Top 5 Invoices Overview',
     message:
-      "Fetch the first 10 customers' names, their lead sources, and the dates they were created for lead analysis."
+      'Obtain details of the top 5 invoices including their document numbers, customer names, and status.'
   },
   {
     icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
-    heading: 'Lead Source Analysis',
-    subheading: 'First 10 Customers with Lead Sources',
+    heading: 'Transaction Summary',
+    subheading: 'Top 20 Transactions Payment Methods',
     message:
-      "Retrieve the top 10 customers' names and the number of visits they made to the website to understand customer engagement.."
+      'List the customers and their payment methods for the top 20 transactions.'
+  },
+  {
+    icon: <ClipboardIcon style={{ color: '#8900A0' }} />,
+    heading: 'Profit Analysis',
+    subheading: 'Invoices with High Gross Profit',
+    message:
+      'List the first 15 invoices where the estimated gross profit is greater than $5000 and customer is present.'
   }
 ]
 

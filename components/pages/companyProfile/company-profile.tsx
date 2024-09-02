@@ -13,7 +13,6 @@ import { PiChartLayout } from '../../../components/piChart/pi-chart'
 import SentimentsGraph from '@/components/sampleChart/sample-chart'
 import { useUser } from '@clerk/nextjs'
 
-
 function ClipboardIcon(props: any) {
   return (
     <svg
@@ -79,7 +78,7 @@ function StarIcon(props: any) {
 const CompanyProfilePage = () => {
   const users = {
     profileImage: '/images/profile-picture.png',
-    backgroundImage: '/images/profile-Background.png',
+    backgroundImage: '/images/profile-Background.png'
   }
 
   const { user } = useUser()
@@ -95,17 +94,22 @@ const CompanyProfilePage = () => {
         </header>
         <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
           <div className="relative -top-16 px-10 block xl:flex xl:items-center xl:justify-start text-black">
-          <img
+            <img
               src="/images/Korin-logo.png"
               alt="Profile"
               className="p-3 size-32 rounded object-contain border bg-white border-[#BFBCC0]"
             />
             <div className="ml-0 mb-[20px] mt-[20px] xl:ml-4 xl:mt-0 xl:mb-0 p-[12px] rounded border border-[#BFBCC0] bg-white min-h-[17.5vh] overflow-auto ">
-              <h6 className="font-bold text-[20px]">
-              Korin Inc.
-              </h6>
+              <h6 className="font-bold text-[20px]">Korin Inc.</h6>
               <p className="m-0 p-0">
-              Since 1982, this Tribeca showroom has been a cornerstone of New York's culinary scene, offering the world’s largest collection of Japanese knives, premium kitchen tools, and exquisite tableware. Blending innovative design with traditional craftsmanship, it provides unmatched quality to chefs and home cooks alike. The showroom also deepens its community ties by hosting knife sharpening demonstrations and events with renowned chefs.
+                Since 1982, this Tribeca showroom has been a cornerstone of New
+                York's culinary scene, offering the world’s largest collection
+                of Japanese knives, premium kitchen tools, and exquisite
+                tableware. Blending innovative design with traditional
+                craftsmanship, it provides unmatched quality to chefs and home
+                cooks alike. The showroom also deepens its community ties by
+                hosting knife sharpening demonstrations and events with renowned
+                chefs.
               </p>
             </div>
           </div>
@@ -123,14 +127,26 @@ const CompanyProfilePage = () => {
                 </div>
                 <CardContent>
                   <p>
-                    Today, the team focused on refining our project management
-                    strategies, ensuring that all deliverables are on track and
-                    meet our high standards of quality. Our developers worked on
-                    integrating new features into the platform, enhancing user
-                    experience and optimizing performance. Additionally, we held
-                    a collaborative session with our marketing team to align our
-                    upcoming campaigns with the latest market trends, ensuring
-                    maximum reach and engagement.
+                    The data reveals significant gaps and inconsistencies across
+                    various fields, which could impact both product management
+                    and customer relationship management (CRM) processes. With
+                    32,251 unique products, the absence of alternative
+                    identification methods, incomplete dimensional data, and
+                    inconsistent descriptions could hinder inventory management,
+                    e-commerce, and logistics. The lack of category
+                    classification, pricing information, and product imagery
+                    further complicates market segmentation and sales
+                    strategies. Additionally, the dataset contains 1,000
+                    customer records, but missing key information like Company
+                    Name, Email, and Phone Numbers limits the effectiveness of
+                    targeted marketing and customer engagement. Despite these
+                    challenges, the dataset is actively maintained, with unique
+                    identifiers like Customer ID and NetsuiteLink ensuring some
+                    level of operational efficiency. However, the presence of
+                    negative transaction amounts and other data quality issues
+                    indicates a need for improved data collection and management
+                    practices to enhance overall effectiveness in both product
+                    and customer-related operations.
                   </p>
                 </CardContent>
               </Card>
@@ -141,14 +157,17 @@ const CompanyProfilePage = () => {
                   </div>
                   <div>Key Takeaways</div>
                 </div>
-                <Card className="col-span-2 lg:col-span-1 m-5">
+                <Card className="col-span-2 lg:col-span-1 m-5 mt-0">
                   <div className="flex items-left space-x-2 p-5">
                     <div>
                       <LightbulbIcon />{' '}
                     </div>
                     <div>
-                      Development Progress: Successfully integrated new
-                      features, improving overall platform usability
+                      The sales data shows inconsistencies like missing customer
+                      information and negative transaction amounts, suggesting
+                      potential data quality issues and the need for review.
+                      Despite this, all transactions are successfully closed,
+                      indicating effective sales processing.
                     </div>
                   </div>
                 </Card>
@@ -158,8 +177,10 @@ const CompanyProfilePage = () => {
                       <LightbulbIcon />{' '}
                     </div>
                     <div>
-                      Project Management: Enhanced our workflow processes to
-                      increase efficiency and reduce bottlenecks.
+                      Customers data incomplete contact information and B2C
+                      focus highlight the need for improved data quality and
+                      tailored marketing strategies for better customer
+                      engagement and operational efficiency.
                     </div>
                   </div>
                 </Card>
@@ -169,8 +190,11 @@ const CompanyProfilePage = () => {
                       <LightbulbIcon />{' '}
                     </div>
                     <div>
-                      Marketing Strategy: Aligned upcoming campaigns with
-                      current industry trends for better outreach
+                      Product's data contains lack of alternative identifiers,
+                      consistent category information, pricing, imagery,
+                      manufacturer details, and dimensional data hampers
+                      effective product tracking, segmentation, and supply chain
+                      management.
                     </div>
                   </div>
                 </Card>
