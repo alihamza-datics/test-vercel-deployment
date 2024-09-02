@@ -124,8 +124,8 @@ export const triggerShowDataTool = async ({ sqlQuery }) => {
   try {
     test = await streamText({
       model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
-      // maxToolRoundtrips: 5,
-      // toolChoice: { type: 'tool', toolName: 'showData' },
+      maxToolRoundtrips: 5,
+      toolChoice: { type: 'tool', toolName: 'showData' },
       tools: {
         showData: {
           description:
