@@ -168,6 +168,7 @@ export async function saveChat(chat: Chat) {
       ))
 
   } catch (error) {
+    console.log('here error saveChat', error)
     throw new Error(error)
   }
 
