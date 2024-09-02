@@ -8,7 +8,6 @@ import prisma from '@/lib/db/prisma'
 import { Prisma } from '@prisma/client'
 import { LanguageModelV1 } from '@ai-sdk/provider'
 import { closeDBConnection, getDBConnection } from '../db/mssqlDb'
-import fs from 'fs'
 
 export const showData = async ({ args, aiState, uiStream }) => {
   const {
@@ -88,29 +87,33 @@ export const showData = async ({ args, aiState, uiStream }) => {
 }
 
 export const generateSQLQuery = async ({ args, aiState }) => {
-  const { query } = args
-  const vannaRes = await fetchSQLQuery({ query })
-  let sqlQuery = vannaRes?.text
-  const sqlKeywords = [
-    'SELECT',
-    'INSERT',
-    'UPDATE',
-    'DELETE',
-    'CREATE',
-    'DROP',
-    'ALTER'
-  ]
-  const isSQLQuery = sqlKeywords.some(keyword =>
-    query?.toUpperCase().includes(keyword)
-  )
-  const isVannaSQLQuery = sqlKeywords.some(keyword =>
-    sqlQuery?.toUpperCase().includes(keyword)
-  )
-  if (isSQLQuery && !isVannaSQLQuery) {
-    sqlQuery = query
-  }
+  try {
+    const { query } = args
+    const vannaRes = await fetchSQLQuery({ query })
+    let sqlQuery = vannaRes?.text
+    // const sqlKeywords = [
+    //   'SELECT',
+    //   'INSERT',
+    //   'UPDATE',
+    //   'DELETE',
+    //   'CREATE',
+    //   'DROP',
+    //   'ALTER'
+    // ]
+    // const isSQLQuery = sqlKeywords.some(keyword =>
+    //   query?.toUpperCase().includes(keyword)
+    // )
+    // const isVannaSQLQuery = sqlKeywords.some(keyword =>
+    //   sqlQuery?.toUpperCase().includes(keyword)
+    // )
+    // if (isSQLQuery && !isVannaSQLQuery) {
+    //   sqlQuery = query
+    // }
 
-  console.log('here------', 'generateSQLQuery', sqlQuery)
+    console.log('here------', 'generateSQLQuery', sqlQuery)
+  } catch (error) {
+    console.log('error in generateSQLQuery', error)
+  }
 
   return sqlQuery
 }

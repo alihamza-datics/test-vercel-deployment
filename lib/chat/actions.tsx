@@ -184,9 +184,12 @@ async function submitUserMessage(content, chatId) {
           const { toolName, args } = delta
           if (toolName === 'generateSQLQuery') {
             const sqlQuery = await generateSQLQuery({ args, aiState })
+            console.log('before triggerShowDataTool ------------------')
+
             const showDataResult = await triggerShowDataTool({
               sqlQuery: sqlQuery
             })
+            console.log('after triggerShowDataTool ------------------')
 
             for await (const delta of showDataResult.fullStream) {
               const { type } = delta
@@ -207,6 +210,7 @@ async function submitUserMessage(content, chatId) {
                 isSpinner = false
                 const { toolName, args } = delta
                 if (toolName === 'showData') {
+                  console.log('show data tool ------------------')
                   const showDataResult = await showData({
                     args,
                     aiState,
