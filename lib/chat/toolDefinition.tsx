@@ -87,10 +87,11 @@ export const showData = async ({ args, aiState, uiStream }) => {
 }
 
 export const generateSQLQuery = async ({ args, aiState }) => {
+  let sqlQuery
   try {
     const { query } = args
     const vannaRes = await fetchSQLQuery({ query })
-    let sqlQuery = vannaRes?.text
+    sqlQuery = vannaRes?.text
     // const sqlKeywords = [
     //   'SELECT',
     //   'INSERT',
