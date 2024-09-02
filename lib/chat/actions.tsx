@@ -192,6 +192,7 @@ async function submitUserMessage(content, chatId) {
             console.log('after triggerShowDataTool ------------------')
 
             for await (const delta of showDataResult.fullStream) {
+              console.log('here in loop'.delta?.type)
               const { type } = delta
               if (type === 'text-delta') {
                 if (isSpinner) {

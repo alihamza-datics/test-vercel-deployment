@@ -120,47 +120,51 @@ export const generateSQLQuery = async ({ args, aiState }) => {
 }
 
 export const triggerShowDataTool = async ({ sqlQuery }) => {
-  'use client'
-  return await streamText({
-    model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
-    // maxToolRoundtrips: 5,
-    // toolChoice: { type: 'tool', toolName: 'showData' },
-    tools: {
-      showData: {
-        description:
-          'Displays data based on the SQL query provided by generateSQLQuery.',
-        parameters: z.object({
-          sqlQuery: z.string().describe('The SQL query used to fetch data.'),
-          assumptions: z.string().describe('Assumptions made for SQL query.'),
-          explanation: z
-            .string()
-            .describe('Explanation of what the SQL query does.'),
-          typeOfChart: z
-            .string()
-            .describe(
-              'Enum to define what type of chart would represent this sql query data better. Based on the sql query possible values are bar, pie, line, none'
-            ),
-          xAxisProperty: z
-            .string()
-            .describe(
-              'If typeOfChart is bar then tell us which property will better be shown on x axis.'
-            ),
-          yAxisProperty: z
-            .string()
-            .describe(
-              'If typeOfChart is bar then tell us which property will better be shown on y axis.'
-            )
-          // query: z.string().describe('The query the user typed')
-        })
-      }
-    },
-    messages: [
-      {
-        role: 'user',
-        content: `Show data for SQL Query: ${sqlQuery}`
-      }
-    ]
-  })
+  try {
+    const test = await streamText({
+      model: openai('gpt-4-turbo') as unknown as LanguageModelV1,
+      // maxToolRoundtrips: 5,
+      // toolChoice: { type: 'tool', toolName: 'showData' },
+      tools: {
+        showData: {
+          description:
+            'Displays data based on the SQL query provided by generateSQLQuery.',
+          parameters: z.object({
+            sqlQuery: z.string().describe('The SQL query used to fetch data.'),
+            assumptions: z.string().describe('Assumptions made for SQL query.'),
+            explanation: z
+              .string()
+              .describe('Explanation of what the SQL query does.'),
+            typeOfChart: z
+              .string()
+              .describe(
+                'Enum to define what type of chart would represent this sql query data better. Based on the sql query possible values are bar, pie, line, none'
+              ),
+            xAxisProperty: z
+              .string()
+              .describe(
+                'If typeOfChart is bar then tell us which property will better be shown on x axis.'
+              ),
+            yAxisProperty: z
+              .string()
+              .describe(
+                'If typeOfChart is bar then tell us which property will better be shown on y axis.'
+              )
+            // query: z.string().describe('The query the user typed')
+          })
+        }
+      },
+      messages: [
+        {
+          role: 'user',
+          content: `Show data for SQL Query: ${sqlQuery}`
+        }
+      ]
+    })
+  } catch (error) {
+    console.log('here error triggerShowDataTool', error)
+  }
+  return test
 }
 
 const fetchSQLQuery = async ({ query }) => {
