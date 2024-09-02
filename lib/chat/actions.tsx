@@ -189,7 +189,10 @@ async function submitUserMessage(content, chatId) {
             const showDataResult = await triggerShowDataTool({
               sqlQuery: sqlQuery
             })
-            console.log('after triggerShowDataTool ------------------')
+            console.log(
+              'after triggerShowDataTool ------------------',
+              showDataResult
+            )
 
             for await (const delta of showDataResult.fullStream) {
               console.log('here in loop'.delta?.type)
